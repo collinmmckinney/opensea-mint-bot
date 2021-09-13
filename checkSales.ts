@@ -23,15 +23,13 @@ const  discordSetup = async (): Promise<TextChannel> => {
 const buildMessage = (sale: any) => (
   new Discord.MessageEmbed()
 	.setColor('#0099ff')
-	.setTitle(sale.asset.name + ' sold!')
+	.setTitle(sale.asset.name)
 	.setURL(sale.asset.permalink)
 	.setAuthor('OpenSea Bot', 'https://files.readme.io/566c72b-opensea-logomark-full-colored.png', 'https://github.com/sbauch/opensea-discord-bot')
 	.setThumbnail(sale.asset.collection.image_url)
 	.addFields(
 		{ name: 'Name', value: sale.asset.name },
-		{ name: 'Amount', value: `${ethers.utils.formatEther(sale.total_price)}${ethers.constants.EtherSymbol}`},
-		{ name: 'Buyer', value: sale?.winner_account?.address, },
-		{ name: 'Seller', value: sale?.seller?.address,  },
+		{ name: 'Minter', value: sale?.from_account?.user?.username || sale?.from_account?.address, }
 	)
   .setImage(sale.asset.image_url)
 	.setTimestamp(Date.parse(`${sale?.created_date}Z`))
@@ -47,12 +45,12 @@ async function main() {
     "https://api.opensea.io/api/v1/events?" + new URLSearchParams({
       offset: '0',
       limit: '100',
-      event_type: 'successful',
+      event_type: 'transfer',
       only_opensea: 'false',
       occurred_after: hoursAgo.toString(), 
       collection_slug: process.env.COLLECTION_SLUG!,
       asset_contract_address: process.env.CONTRACT_ADDRESS!
-  })).then((resp) => resp.json());
+  })).then((resp) => resp.json()).filter((e: any) => e.from_account.address === '0x0000000000000000000000000000000000000000');
 
   await Promise.all(
     openSeaResponse?.asset_events?.reverse().map(async (sale: any) => {
