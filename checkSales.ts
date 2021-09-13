@@ -50,10 +50,10 @@ async function main() {
       occurred_after: hoursAgo.toString(), 
       collection_slug: process.env.COLLECTION_SLUG!,
       asset_contract_address: process.env.CONTRACT_ADDRESS!
-  })).then((resp) => resp.json()).filter((e: any) => e.from_account.address === '0x0000000000000000000000000000000000000000');
+  })).then((resp) => resp.json());
 
   await Promise.all(
-    openSeaResponse?.asset_events?.reverse().map(async (sale: any) => {
+    openSeaResponse?.asset_events?.filter((e: any) => e.from_account.address === '0x0000000000000000000000000000000000000000').reverse().map(async (sale: any) => {
       const message = buildMessage(sale);
       return channel.send(message)
     })
