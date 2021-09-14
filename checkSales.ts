@@ -29,7 +29,7 @@ const buildMessage = (sale: any) => (
 	.setThumbnail(sale.asset.collection.image_url)
 	.addFields(
 		{ name: 'Name', value: sale.asset.name },
-		{ name: 'Minter', value: sale?.from_account?.user?.username || sale?.from_account?.address, }
+		{ name: 'Minter', value: sale?.to_account?.user?.username || sale?.to_account?.address, }
 	)
   .setImage(sale.asset.image_url)
 	.setTimestamp(Date.parse(`${sale?.created_date}Z`))
