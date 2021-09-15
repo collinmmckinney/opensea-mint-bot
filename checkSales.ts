@@ -20,10 +20,10 @@ const  discordSetup = async (): Promise<TextChannel> => {
   })
 }
 
-const buildMessage = (sale: any) => (
+const buildMessage = async (sale: any) => {
   const tokenMetadata = await fetch(`https://api.hyaliko.com/space-factory/tokens/${asset.token_id}`).then((res: any) => res.json());
   
-  new Discord.MessageEmbed()
+  return new Discord.MessageEmbed()
 	.setColor('#0099ff')
 	.setTitle(tokenMetadata.name)
 	.setURL(sale.asset.permalink)
@@ -36,7 +36,7 @@ const buildMessage = (sale: any) => (
   .setImage(sale.asset.image_url)
 	.setTimestamp(Date.parse(`${sale?.created_date}Z`))
 	.setFooter('Sold on OpenSea', 'https://files.readme.io/566c72b-opensea-logomark-full-colored.png')
-)
+}
 
 async function main() {
   const channel = await discordSetup();
@@ -56,7 +56,7 @@ async function main() {
 
   await Promise.all(
     openSeaResponse?.asset_events?.filter((e: any) => e.from_account.address === '0x0000000000000000000000000000000000000000').reverse().map(async (sale: any) => {
-      const message = buildMessage(sale);
+      const message = await buildMessage(sale);
       return channel.send(message)
     })
   );   
