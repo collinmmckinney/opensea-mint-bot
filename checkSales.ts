@@ -21,14 +21,16 @@ const  discordSetup = async (): Promise<TextChannel> => {
 }
 
 const buildMessage = (sale: any) => (
+  const tokenMetadata = await fetch(`https://api.hyaliko.com/space-factory/tokens/${asset.token_id}`).then((res: any) => res.json());
+  
   new Discord.MessageEmbed()
 	.setColor('#0099ff')
-	.setTitle(sale.asset.name)
+	.setTitle(tokenMetadata.name)
 	.setURL(sale.asset.permalink)
 	.setAuthor('OpenSea Bot', 'https://files.readme.io/566c72b-opensea-logomark-full-colored.png', 'https://github.com/sbauch/opensea-discord-bot')
-	.setThumbnail(sale.asset.collection.image_url)
+	.setThumbnail(tokenMetadata.image_url)
 	.addFields(
-		{ name: 'Name', value: sale.asset.name },
+		{ name: 'Name', value: tokenMetadata.name },
 		{ name: 'Minter', value: sale?.to_account?.user?.username || sale?.to_account?.address, }
 	)
   .setImage(sale.asset.image_url)
