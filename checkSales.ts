@@ -55,7 +55,7 @@ async function main() {
       only_opensea: 'false',
       occurred_after: hoursAgo.toString(), 
       collection_slug: process.env.COLLECTION_SLUG!
-  }), headers).then((resp) => resp.json());
+  }), headers).catch(e => console.log(e)).then((resp) => resp.json());
 
   await Promise.all(
     openSeaResponse?.asset_events?.filter((e: any) => e.from_account.address === '0x0000000000000000000000000000000000000000').reverse().map(async (sale: any) => {
