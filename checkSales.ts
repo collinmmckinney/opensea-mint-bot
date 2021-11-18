@@ -54,8 +54,7 @@ async function main() {
       event_type: 'transfer',
       only_opensea: 'false',
       occurred_after: hoursAgo.toString(), 
-      collection_slug: process.env.COLLECTION_SLUG!,
-      asset_contract_address: process.env.CONTRACT_ADDRESS!
+      collection_slug: process.env.COLLECTION_SLUG!
   }), headers).then((resp) => resp.json());
 
   await Promise.all(
