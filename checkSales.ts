@@ -43,6 +43,10 @@ async function main() {
   const seconds = process.env.SECONDS ? parseInt(process.env.SECONDS) : 3_600;
   const hoursAgo = (Math.round(new Date().getTime() / 1000) - (seconds)); // in the last hour, run hourly?
   
+  const headers = {};
+  if (process.env.API_KEY!) {
+    headers['X-API-KEY'] = process.env.API_KEY!;
+  }
   const openSeaResponse = await fetch(
     "https://api.opensea.io/api/v1/events?" + new URLSearchParams({
       offset: '0',
@@ -52,7 +56,7 @@ async function main() {
       occurred_after: hoursAgo.toString(), 
       collection_slug: process.env.COLLECTION_SLUG!,
       asset_contract_address: process.env.CONTRACT_ADDRESS!
-  })).then((resp) => resp.json());
+  }), headers).then((resp) => resp.json());
 
   await Promise.all(
     openSeaResponse?.asset_events?.filter((e: any) => e.from_account.address === '0x0000000000000000000000000000000000000000').reverse().map(async (sale: any) => {
